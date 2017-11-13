@@ -5,7 +5,7 @@ import com.beachape.data.{NewTweet, Tweet}
 import io.circe.Json
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, FunSpec, Matchers}
-import org.http4s.{Method, Request, Uri}
+import org.http4s.{Method, Request, Status, Uri}
 import org.http4s.client.blaze._
 import org.scalatest.OptionValues._
 
@@ -44,9 +44,10 @@ class AppServerSpec
         _ = tweets should contain(tweet)
         retrieved <- httpClient.expect[Option[Tweet]](uri(s"tweets/${tweet.id.value}"))
         _ = tweet shouldBe retrieved.value
-        _          <- httpClient.expect[Json](Request[IO](Method.DELETE, uri(s"tweets/${tweet.id.value}")))
-        retrieved2 <- httpClient.expect[Option[Tweet]](uri(s"tweets/${tweet.id.value}"))
-        _ = retrieved2 shouldBe None
+        _ <- httpClient.expect[Json](Request[IO](Method.DELETE, uri(s"tweets/${tweet.id.value}")))
+        retrieveStatus <- httpClient.status(
+          Request[IO](Method.GET, uri(s"tweets/${tweet.id.value}")))
+        _ = retrieveStatus shouldBe Status.NotFound
       } yield ()
       test.unsafeRunSync()
     }

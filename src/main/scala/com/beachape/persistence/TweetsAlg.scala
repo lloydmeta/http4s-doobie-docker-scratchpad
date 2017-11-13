@@ -44,7 +44,8 @@ object DoobieTweetsAlg {
     sql"""
       SELECT t.id, t.message
       FROM tweets as t
-      where t.id = $tweetId
+      WHERE t.id = $tweetId
+      LIMIT 1
     """.query[Tweet]
   }
 

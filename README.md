@@ -1,4 +1,4 @@
-# http4s + doobie + docker scratchpad
+# http4s + doobie + docker scratchpad [![Build Status](https://travis-ci.org/lloydmeta/http4s-doobie-docker-scratchpad.svg?branch=master)](https://travis-ci.org/lloydmeta/http4s-doobie-docker-scratchpad)
 
 My little sandbox for playing around with http4s, doobie, docker, testing, etc.
 
@@ -8,7 +8,7 @@ Explores:
 * Using [doobie](http://tpolecat.github.io/doobie/docs/01-Introduction.html) with cats-effect
 * [Pureconfig](https://github.com/pureconfig/pureconfig) for loading configuration
 * [Flyway](https://flywaydb.org/) for handling migrations
-* Docker testkit for bringing up Docker containers on a per-test-suite basis
+* []Docker testkit](https://github.com/whisklabs/docker-it-scala) for bringing up Docker containers on a per-test-suite basis
 * [sbt-native-packager](sbt-native-packager.readthedocs.io) for bundling the app into a Docker image
 * [sbt-docker-compose](https://github.com/Tapad/sbt-docker-compose) for bringing up a docker-compose environment based on the main project and a docker-compose.yml file
     * Can run the whole project from sbt via `sbt dockerComposeUp` (stopped via `dockerComposeStop`)
