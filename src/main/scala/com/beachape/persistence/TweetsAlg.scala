@@ -34,6 +34,8 @@ abstract class TweetsAlg[F[_]: Effect] {
 
   def delete(tweetId: TweetId): F[Int]
 
+  def update(tweet: Tweet): F[Int]
+
 }
 
 object DoobieTweetsAlg {
@@ -56,21 +58,27 @@ object DoobieTweetsAlg {
     """.query[Tweet]
   }
 
-  private[persistence] def insertTweetQuery(newTweet: NewTweet): Query0[TweetId] = {
+  private[persistence] def insertTweetQuery(newTweet: NewTweet): Update0 = {
     sql"""
        INSERT
        INTO tweets (message)
        VALUES (${newTweet.message})
-       RETURNING id
-       """.query[TweetId]
+       """.update
   }
 
-  private[persistence] def deleteTweetQuery(tweetId: TweetId): Query0[Long] = {
+  private[persistence] def deleteTweetQuery(tweetId: TweetId): Update0 = {
     sql"""
       DELETE FROM tweets as t
       WHERE t.id = $tweetId
-      RETURNING id
-    """.query[Long]
+    """.update
+  }
+
+  private[persistence] def updateTweetQuery(tweet: Tweet): Update0 = {
+    sql"""
+      UPDATE tweets
+      SET message = ${tweet.message}
+      WHERE id = ${tweet.id}
+    """.update
   }
 
 }
@@ -88,13 +96,17 @@ class DoobieTweetsAlg[F[_]: Effect](xa: Transactor[F]) extends TweetsAlg[F] {
   def listTweets(): F[Seq[Tweet]] = listTweetsQuery.list.transact(xa).map(_.toSeq)
 
   def insert(newTweet: NewTweet): F[Either[InsertionError, Tweet]] =
-    insertTweetQuery(newTweet).unique
+    insertTweetQuery(newTweet)
+      .withUniqueGeneratedKeys[TweetId]("id")
       .transact(xa)
       .map(id => Either.right[InsertionError, Tweet](Tweet(id, newTweet.message)))
       .recover {
         case NonFatal(e) => Either.left[InsertionError, Tweet](InsertionError(e))
       }
 
-  override def delete(tweetId: TweetId): F[Int] =
-    deleteTweetQuery(tweetId).list.transact(xa).map(_.size)
+  def delete(tweetId: TweetId): F[Int] =
+    deleteTweetQuery(tweetId).run.transact(xa)
+
+  def update(tweet: Tweet): F[Int] =
+    updateTweetQuery(tweet).run.transact(xa)
 }

@@ -1,6 +1,6 @@
 package com.beachape.persistence
 
-import com.beachape.data.{NewTweet, TweetId}
+import com.beachape.data.{NewTweet, Tweet, TweetId}
 import org.scalatest.{FunSpec, Matchers}
 import doobie.scalatest.IOChecker
 import helpers.DockerPostgresService
@@ -28,6 +28,9 @@ class QueryTypeSpec extends FunSpec with Matchers with IOChecker with DockerPost
     }
     it("should have the proper types deleting a tweet") {
       check(DoobieTweetsAlg.deleteTweetQuery(TweetId(10)))
+    }
+    it("should have the proper types updating a tweet") {
+      check(DoobieTweetsAlg.updateTweetQuery(Tweet(TweetId(10), "hi")))
     }
 
   }

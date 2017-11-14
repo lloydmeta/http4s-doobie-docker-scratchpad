@@ -12,12 +12,8 @@ import com.beachape.persistence.{HikariOps, Migration}
 
 object Main extends StreamApp[IO] {
 
-  override def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, ExitCode] = {
-    for {
-      s      <- Stream.eval(BlazeProps().map(_.serve))
-      sInner <- s
-    } yield sInner
-  }
+  override def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, ExitCode] =
+    Stream.eval(BlazeProps().map(_.serve)).flatMap(identity)
 
 }
 

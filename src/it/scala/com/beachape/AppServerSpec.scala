@@ -32,7 +32,7 @@ class AppServerSpec
       result shouldBe 'empty
     }
 
-    it("should do CRD properly when inserting and deleting a tweet") {
+    it("should do CRUD properly") {
       val test = for {
         req <- IO.pure(
           Request[IO](Method.POST, uri("tweets"))
@@ -40,10 +40,15 @@ class AppServerSpec
         tweet <- httpClient.expect[Tweet](req)
         tweets <- httpClient
           .expect[Seq[Tweet]](uri("tweets"))
-        _ = tweets.size shouldBe 1
-        _ = tweets should contain(tweet)
+        _            = tweets.size shouldBe 1
+        _            = tweets should contain(tweet)
+        updatedTweet = tweet.copy(message = "heyo")
+        _ <- httpClient.expect[Tweet](
+          Request[IO](Method.PATCH, uri("tweets"))
+            .withBody(updatedTweet)
+        )
         retrieved <- httpClient.expect[Option[Tweet]](uri(s"tweets/${tweet.id.value}"))
-        _ = tweet shouldBe retrieved.value
+        _ = retrieved.value shouldBe updatedTweet
         _ <- httpClient.expect[Json](Request[IO](Method.DELETE, uri(s"tweets/${tweet.id.value}")))
         retrieveStatus <- httpClient.status(
           Request[IO](Method.GET, uri(s"tweets/${tweet.id.value}")))

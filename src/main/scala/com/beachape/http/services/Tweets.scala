@@ -2,7 +2,7 @@ package com.beachape.http.services
 
 import cats.effect.IO
 import com.beachape.config.SwaggerConf
-import com.beachape.data.{NewTweet, TweetId}
+import com.beachape.data.{NewTweet, Tweet, TweetId}
 import com.beachape.http.serdes.{JsonError, JsonSuccess}
 import com.beachape.persistence.TweetsAlg
 import doobie.util.transactor.Transactor
@@ -38,6 +38,13 @@ object Tweets {
           }
         }
       }
+      case req @ PATCH -> Root =>
+        req.decodeWith(EntityDecoder[IO, Tweet], strict = true) { tweet =>
+          dao.update(tweet).flatMap {
+            case 1 => Ok(tweet)
+            case _ => BadRequest(JsonError("Update failed"))
+          }
+        }
       case DELETE -> Root / TweetIdVar(tweetId) =>
         dao.delete(tweetId).flatMap { count =>
           if (count > 0)
@@ -78,7 +85,7 @@ object Tweets {
           ))
         ),
         "post" -> Json.obj(
-          "summary"     -> Json.fromString("Get a list of tweets"),
+          "summary"     -> Json.fromString("Create a tweet"),
           "description" -> Json.fromString(""),
           "operationId" -> Json.fromString("createTweet"),
           "consumes"    -> Json.arr(Json.fromString("application/json")),
@@ -99,6 +106,31 @@ object Tweets {
             ),
             "400" -> Json.obj(
               "description" -> Json.fromString("Creation error"),
+            )
+          ))
+        ),
+        "patch" -> Json.obj(
+          "summary"     -> Json.fromString("Update a tweet"),
+          "description" -> Json.fromString(""),
+          "operationId" -> Json.fromString("updateTweet"),
+          "consumes"    -> Json.arr(Json.fromString("application/json")),
+          "produces"    -> Json.arr(Json.fromString("application/json")),
+          "parameters" -> Json.arr(Json.obj(
+            "in"          -> Json.fromString("body"),
+            "name"        -> Json.fromString("body"),
+            "description" -> Json.fromString("Tweet object"),
+            "required"    -> Json.fromBoolean(true),
+            "schema" -> Json.obj(
+              "$ref" -> Json.fromString("#/definitions/Tweet")
+            )
+          )),
+          "responses" -> Json.obj("200" -> Json.obj(
+            "description" -> Json.fromString("Success"),
+            "schema" -> Json.obj(
+              "$ref" -> Json.fromString("#/definitions/Tweet")
+            ),
+            "400" -> Json.obj(
+              "description" -> Json.fromString("Update error"),
             )
           ))
         ),
@@ -160,7 +192,7 @@ object Tweets {
         "required" -> Json.arr(Json.fromString("id"), Json.fromString("message")),
         "properties" -> Json.obj(
           "id" -> Json.obj(
-            "type"   -> Json.fromString("Integer"),
+            "type"   -> Json.fromString("integer"),
             "format" -> Json.fromString("int64"),
           ),
           "message" -> Json.obj(
