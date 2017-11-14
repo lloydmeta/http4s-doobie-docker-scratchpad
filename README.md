@@ -9,7 +9,7 @@ Explores:
 * [Pureconfig](https://github.com/pureconfig/pureconfig) for loading configuration
 * [Flyway](https://flywaydb.org/) for handling migrations
 * [Docker testkit](https://github.com/whisklabs/docker-it-scala) for bringing up Docker containers on a per-test-suite basis
-* [sbt-native-packager](sbt-native-packager.readthedocs.io) for bundling the app into a Docker image
+* [sbt-native-packager](http://sbt-native-packager.readthedocs.io/en/latest/) for bundling the app into a Docker image
 * [sbt-docker-compose](https://github.com/Tapad/sbt-docker-compose) for bringing up a docker-compose environment based on the main project and a docker-compose.yml file
     * Can run the whole project from sbt via `sbt dockerComposeUp` (stopped via `dockerComposeStop`)
     * Also used for running Integration tests from a separate subproject

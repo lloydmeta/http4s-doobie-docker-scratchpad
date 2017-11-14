@@ -84,7 +84,7 @@ object DoobieTweetsAlg {
 }
 
 /**
-  * Implementation of our algebra based o Doobie
+  * Implementation of our algebra based on Doobie
   */
 class DoobieTweetsAlg[F[_]: Effect](xa: Transactor[F]) extends TweetsAlg[F] {
 
