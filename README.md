@@ -4,7 +4,7 @@ My little sandbox for playing around with http4s, doobie, docker, testing, etc.
 
 Explores:
 
-* Using [http4s](http4s.org) with cats-effect
+* Using [http4s](http://http4s.org/) with [cats-effect](https://github.com/typelevel/cats-effect)
 * Using [doobie](http://tpolecat.github.io/doobie/docs/01-Introduction.html) with cats-effect
 * [Pureconfig](https://github.com/pureconfig/pureconfig) for loading configuration
 * [Flyway](https://flywaydb.org/) for handling migrations
