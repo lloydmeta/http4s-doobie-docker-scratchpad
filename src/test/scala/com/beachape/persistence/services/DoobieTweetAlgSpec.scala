@@ -1,4 +1,4 @@
-package com.beachape.persistence
+package com.beachape.persistence.services
 
 import cats.effect.IO
 import com.beachape.data.{NewTweet, TweetId}

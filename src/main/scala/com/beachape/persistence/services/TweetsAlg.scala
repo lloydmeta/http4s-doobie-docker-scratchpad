@@ -1,11 +1,11 @@
-package com.beachape.persistence
+package com.beachape.persistence.services
 
 import cats.effect.Effect
 import cats.implicits._
 import com.beachape.data.{NewTweet, Tweet, TweetId}
-import doobie.util.transactor.Transactor
 import doobie._
 import doobie.implicits._
+import doobie.util.transactor.Transactor
 import fs2.internal.NonFatal
 
 object TweetsAlg {
@@ -13,7 +13,7 @@ object TweetsAlg {
   /**
     * Given a transactor, returns a Doobie-based implementation of Tweets algebra
     */
-  def doobie[F[_]: Effect](xa: Transactor[F]) = new DoobieTweetsAlg[F](xa)
+  def doobie[F[_]: Effect](xa: Transactor[F]): DoobieTweetsAlg[F] = new DoobieTweetsAlg[F](xa)
 
   sealed trait Error
   final case class InsertionError(underlying: Throwable) extends Error

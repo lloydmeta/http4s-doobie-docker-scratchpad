@@ -3,8 +3,8 @@ package com.beachape.http.services
 import cats.effect.IO
 import com.beachape.config.SwaggerConf
 import com.beachape.data.{NewTweet, Tweet, TweetId}
-import com.beachape.http.serdes.{JsonError, JsonSuccess}
-import com.beachape.persistence.TweetsAlg
+import com.beachape.http.data.{JsonError, JsonSuccess}
+import com.beachape.persistence.services.TweetsAlg
 import doobie.util.transactor.Transactor
 import io.circe.Json
 import org.http4s.{EntityDecoder, HttpService}

@@ -1,7 +1,8 @@
 package com.beachape.http.serdes
 import cats.Applicative
 import com.beachape.data.{NewTweet, Tweet, TweetId}
-import com.beachape.persistence.TweetsAlg.InsertionError
+import com.beachape.http.data._
+import com.beachape.persistence.services.TweetsAlg.InsertionError
 import io.circe.Encoder
 import io.circe.generic.semiauto._
 import org.http4s.EntityEncoder
@@ -44,6 +45,3 @@ trait JsonEncoders {
     }
 
 }
-
-final case class JsonError(message: String)           extends AnyVal
-final case class JsonSuccess(message: Option[String]) extends AnyVal

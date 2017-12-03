@@ -17,7 +17,9 @@ object Migration {
         val dataSource = HikariOps.toDataSource(dbConfig)
         val flyway     = new Flyway()
         flyway.setDataSource(dataSource)
-        Success(flyway.migrate())
+        val migrationsRun = flyway.migrate()
+        dataSource.close()
+        Success(migrationsRun)
       }.toEither.left.map(Failure.apply)
     } else {
       Right(Success(0))

@@ -1,6 +1,7 @@
 package com.beachape.persistence
 
 import com.beachape.data.{NewTweet, Tweet, TweetId}
+import com.beachape.persistence.services.DoobieTweetsAlg
 import org.scalatest.{FunSpec, Matchers}
 import doobie.scalatest.IOChecker
 import helpers.DockerPostgresService
