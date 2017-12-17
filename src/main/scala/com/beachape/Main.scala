@@ -2,13 +2,12 @@ package com.beachape
 
 import cats.effect.IO
 import com.beachape.config.AppConf
-import fs2.Stream
+import fs2.{Stream, StreamApp}
 import org.http4s.server.blaze._
-import org.http4s.util.StreamApp
-import org.http4s.util.ExitCode
 import org.http4s.server.staticcontent.{MemoryCache, WebjarService, webjarService}
 import com.beachape.http.services.{Index, Tweets}
 import com.beachape.persistence.{HikariOps, Migration}
+import fs2.StreamApp.ExitCode
 
 object Main extends StreamApp[IO] {
 

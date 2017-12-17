@@ -1,7 +1,6 @@
 package com.beachape.http.serdes
 
 import cats.effect.Effect
-import cats.implicits._
 import com.beachape.data.{NewTweet, Tweet, TweetId}
 import com.beachape.http.responses.InvalidMessageBodyFailure
 import io.circe.Decoder
