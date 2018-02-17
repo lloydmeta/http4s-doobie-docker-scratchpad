@@ -8,12 +8,11 @@ import doobie.hikari.HikariTransactor
 
 object HikariOps {
 
-  def toTransactor(dbConfig: DBConf): IO[HikariTransactor[IO]] = {
-    HikariTransactor[IO](driverClassName = dbConfig.driverClassName,
-                         url = dbConfig.jdbcUrl.toString,
-                         user = dbConfig.user,
-                         pass = dbConfig.password)
-  }
+  def toTransactor(dbConfig: DBConf): IO[HikariTransactor[IO]] =
+    HikariTransactor.newHikariTransactor[IO](driverClassName = dbConfig.driverClassName,
+                                             url = dbConfig.jdbcUrl.toString,
+                                             user = dbConfig.user,
+                                             pass = dbConfig.password)
 
   def toDataSource(dbConfig: DBConf): HikariDataSource = {
     new HikariDataSource(toHikariConfig(dbConfig))

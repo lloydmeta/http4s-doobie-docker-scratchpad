@@ -8,9 +8,9 @@ organization := "com.beachape"
 
 scalaVersion := "2.12.4"
 
-val http4sVersion        = "0.18.0-M6"
-val doobieVersion        = "0.5.0-M10"
-val circeVersion         = "0.8.0"
+val http4sVersion        = "0.18.0"
+val doobieVersion        = "0.5.0"
+val circeVersion         = "0.9.1"
 val dockerTestkitVersion = "0.9.5"
 val pureConfigVersion    = "0.8.0"
 
