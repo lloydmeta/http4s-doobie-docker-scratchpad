@@ -17,7 +17,7 @@ class AppServerSpec
     with BeforeAndAfterAll {
 
   private val serverAccess = sys.props.get("http4s-db-scratchpad:8080").value
-  private val httpClient   = PooledHttp1Client[IO]()
+  private val httpClientIO = Http1Client[IO]()
 
   import com.beachape.http.serdes.Decoders._
   import com.beachape.http.serdes.Encoders._
@@ -25,18 +25,15 @@ class AppServerSpec
   describe("tweets endpoints") {
 
     it("should work initially be empty when there are no tweets") {
-      val result =
-        httpClient
-          .expect[Seq[Tweet]](uri("tweets"))
-          .unsafeRunSync()
-      result shouldBe 'empty
+      val result = httpClientIO.flatMap(_.expect[Seq[Tweet]](uri("tweets")))
+      result.unsafeRunSync() shouldBe 'empty
     }
 
     it("should do CRUD properly") {
       val test = for {
-        req <- IO.pure(
-          Request[IO](Method.POST, uri("tweets"))
-            .withBody(NewTweet("message")))
+        httpClient <- httpClientIO
+        req = Request[IO](Method.POST, uri("tweets"))
+          .withBody(NewTweet("message"))
         tweet <- httpClient.expect[Tweet](req)
         tweets <- httpClient
           .expect[Seq[Tweet]](uri("tweets"))
@@ -61,7 +58,7 @@ class AppServerSpec
 
   override protected def afterAll(): Unit = {
     super.afterAll()
-    httpClient.shutdown.unsafeRunSync()
+    httpClientIO.flatMap(_.shutdown).unsafeRunSync()
   }
 
   private def uri(path: String): Uri = Uri.unsafeFromString(s"http://$serverAccess/$path")

@@ -1,5 +1,7 @@
 package com.beachape
 
+import java.util.concurrent.Executors
+
 import cats.effect.IO
 import com.beachape.config.AppConf
 import fs2.{Stream, StreamApp}
@@ -9,10 +11,17 @@ import com.beachape.http.services.{Index, Tweets}
 import com.beachape.persistence.{HikariOps, Migration}
 import fs2.StreamApp.ExitCode
 
+import scala.concurrent.ExecutionContext
+
 object Main extends StreamApp[IO] {
 
-  override def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, ExitCode] =
+  override def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, ExitCode] = {
+    implicit val serverECtx: ExecutionContext = {
+      val pool = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors)
+      ExecutionContext.fromExecutor(pool)
+    }
     Stream.eval(BlazeProps().map(_.serve)).flatMap(identity)
+  }
 
 }
 

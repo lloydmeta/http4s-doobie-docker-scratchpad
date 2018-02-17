@@ -93,7 +93,7 @@ class DoobieTweetsAlg[F[_]: Effect](xa: Transactor[F]) extends TweetsAlg[F] {
 
   def getTweet(tweetId: TweetId): F[Option[Tweet]] = getTweetQuery(tweetId).option.transact(xa)
 
-  def listTweets(): F[Seq[Tweet]] = listTweetsQuery.list.transact(xa).map(_.toSeq)
+  def listTweets(): F[Seq[Tweet]] = listTweetsQuery.to[List].transact(xa).map(_.toSeq)
 
   def insert(newTweet: NewTweet): F[Either[InsertionError, Tweet]] =
     insertTweetQuery(newTweet)
